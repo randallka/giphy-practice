@@ -1,32 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
-
+import Form from './Components/Form/Form'
+import Gif from './Components/Gif/Gif'
 function App() {
-  const [count, setCount] = useState(0)
+const [gifState, setGifState] = useState()
+const [toggleState, setToggleState] = useState(true)
 
+useEffect(() => {
+async function apiCall() { 
+  let data = await fetch('https://api.giphy.com/v1/gifs/random?api_key=8yV83htzrcE32bJTq9kBgdkTi0BOfERA&tag=&rating=g')
+  let jsonData =await data.json()
+  setGifState(jsonData.data.images.fixed_height.url)
+}
+apiCall()
+}, [toggleState])
+
+function handleSubmit() { 
+  setToggleState(!toggleState)
+}
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Form submit={handleSubmit}/>
+      <Gif url={gifState}/>
     </div>
   )
 }
